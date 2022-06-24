@@ -30,9 +30,9 @@ runs:
   steps:
     - id: get-codeartifact-details
       run: |
-        CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain "${CODEARTIFACT_DOMAIN}" --domain-owner "${AWS_ACCOUNT_ID}" --query authorizationToken --output text --duration-seconds ${AUTH_TOKEN_DURATION})
-        echo "::set-output name=pip-index-url::https://aws:${CODEARTIFACT_AUTH_TOKEN}@${CODEARTIFACT_DOMAIN}-${AWS_ACCOUNT_ID}.d.codeartifact.${AWS_DEFAULT_REGION}.amazonaws.com/pypi/${CODEARTIFACT_REPO}/simple/"
+        CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain ${{ inputs.codeartifact-domain }} --domain-owner ${{ inputs.aws-account-id }} --query authorizationToken --output text --duration-seconds ${{ inputs.auth-token-duration }})
+        echo "::set-output name=pip-index-url::https://aws:${CODEARTIFACT_AUTH_TOKEN}@${{ inputs.codeartifact-domain }}-${{ inputs.aws-account-id }}.d.codeartifact.${AWS_DEFAULT_REGION}.amazonaws.com/pypi/${{ inputs.codeartifact-repo }}/simple/"
         echo "::set-output name=twine-username::aws"
         echo "::set-output name=twine-password::${CODEARTIFACT_AUTH_TOKEN}"
-        echo "::set-output name=twine-repository-url::$(aws codeartifact get-repository-endpoint --domain "${CODEARTIFACT_DOMAIN}" --domain-owner "${AWS_ACCOUNT_ID}" --repository "${CODEARTIFACT_REPO}" --format pypi --query repositoryEndpoint --output text)"
+        echo "::set-output name=twine-repository-url::$(aws codeartifact get-repository-endpoint --domain ${{ inputs.codeartifact-domain }} --domain-owner ${{ inputs.aws-account-id }} --repository ${{ inputs.codeartifact-repo }} --format pypi --query repositoryEndpoint --output text)"
       shell: bash
