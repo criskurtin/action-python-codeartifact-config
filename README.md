@@ -25,7 +25,7 @@ This is why the action outputs the variables for manual configuration instead of
 
     - name: Retrieve CodeArtifact config
       id: codeartifact
-      uses: criskurtin/action-python-codeartifact-config@v1
+      uses: criskurtin/action-python-codeartifact-config@v3
       with:
         aws-account-id: ${{ secrets.AWS_ACCOUNT_ID }}
         codeartifact-domain: some-domain
