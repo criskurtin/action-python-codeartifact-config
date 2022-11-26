@@ -13,30 +13,30 @@ inputs:
     description: 'Duration of authentication token used in generated URLs.'
     default: 1800
 outputs:
-  auth-token:
+  AUTH_TOKEN:
     description: 'Short-term authorization token retreived from AWS.'
-    value: ${{ steps.get-codeartifact-details.outputs.auth-token }}
-  pip-index-url:
+    value: ${{ steps.get-codeartifact-details.outputs.AUTH_TOKEN }}
+  PIP_INDEX_URL:
     description: 'Store this value in PIP_INDEX_URL environment variable for steps which use pip.'
-    value: ${{ steps.get-codeartifact-details.outputs.pip-index-url }}
-  twine-username:
+    value: ${{ steps.get-codeartifact-details.outputs.PIP_INDEX_URL }}
+  TWINE_USERNAME:
     description: 'Store this value in TWINE_USERNAME environment variable for steps which use twine.'
-    value: ${{ steps.get-codeartifact-details.outputs.twine-username }}
-  twine-password:
+    value: ${{ steps.get-codeartifact-details.outputs.TWINE_USERNAME }}
+  TWINE_PASSWORD:
     description: 'Store this value in TWINE_PASSWORD environment variable for steps which use twine.'
-    value: ${{ steps.get-codeartifact-details.outputs.twine-password }}
-  twine-repository-url:
+    value: ${{ steps.get-codeartifact-details.outputs.TWINE_PASSWORD }}
+  TWINE_REPOSITORY_URL:
     description: 'Store this value in TWINE_REPOSITORY_URL environment variable for steps which use twine.'
-    value: ${{ steps.get-codeartifact-details.outputs.twine-repository-url }}
+    value: ${{ steps.get-codeartifact-details.outputs.TWINE_REPOSITORY_URL }}
 runs:
   using: "composite"
   steps:
     - id: get-codeartifact-details
       run: |
         CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain ${{ inputs.codeartifact-domain }} --domain-owner ${{ inputs.aws-account-id }} --query authorizationToken --output text --duration-seconds ${{ inputs.auth-token-duration }})
-        echo "::set-output name=auth-token::${CODEARTIFACT_AUTH_TOKEN}"
-        echo "::set-output name=pip-index-url::https://aws:${CODEARTIFACT_AUTH_TOKEN}@${{ inputs.codeartifact-domain }}-${{ inputs.aws-account-id }}.d.codeartifact.${AWS_DEFAULT_REGION}.amazonaws.com/pypi/${{ inputs.codeartifact-repo }}/simple/"
-        echo "::set-output name=twine-username::aws"
-        echo "::set-output name=twine-password::${CODEARTIFACT_AUTH_TOKEN}"
-        echo "::set-output name=twine-repository-url::$(aws codeartifact get-repository-endpoint --domain ${{ inputs.codeartifact-domain }} --domain-owner ${{ inputs.aws-account-id }} --repository ${{ inputs.codeartifact-repo }} --format pypi --query repositoryEndpoint --output text)"
+        echo "AUTH_TOKEN=${CODEARTIFACT_AUTH_TOKEN}" >> $GITHUB_OUTPUT
+        echo "PIP_INDEX_URL=https://aws:${CODEARTIFACT_AUTH_TOKEN}@${{ inputs.codeartifact-domain }}-${{ inputs.aws-account-id }}.d.codeartifact.${AWS_DEFAULT_REGION}.amazonaws.com/pypi/${{ inputs.codeartifact-repo }}/simple/" >> $GITHUB_OUTPUT
+        echo "TWINE_USERNAME=aws" >> $GITHUB_OUTPUT
+        echo "TWINE_PASSWORD=${CODEARTIFACT_AUTH_TOKEN}" >> $GITHUB_OUTPUT
+        echo "TWINE_REPOSITORY_URL=$(aws codeartifact get-repository-endpoint --domain ${{ inputs.codeartifact-domain }} --domain-owner ${{ inputs.aws-account-id }} --repository ${{ inputs.codeartifact-repo }} --format pypi --query repositoryEndpoint --output text)" >> $GITHUB_OUTPUT
       shell: bash

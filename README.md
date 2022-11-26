@@ -35,10 +35,10 @@ This is why the action outputs the variables for manual configuration instead of
     - name: Publish package to CodeArtifact
       if: github.ref_name == 'main'
       env:
-        PIP_INDEX_URL: ${{ steps.codeartifact.outputs.pip-index-url }}
-        TWINE_USERNAME: ${{ steps.codeartifact.outputs.twine-username }}
-        TWINE_PASSWORD: ${{ steps.codeartifact.outputs.twine-password }}
-        TWINE_REPOSITORY_URL: ${{ steps.codeartifact.outputs.twine-repository-url }}
+        PIP_INDEX_URL: ${{ steps.codeartifact.outputs.PIP_INDEX_URL }}
+        TWINE_USERNAME: ${{ steps.codeartifact.outputs.TWINE_USERNAME }}
+        TWINE_PASSWORD: ${{ steps.codeartifact.outputs.TWINE_PASSWORD }}
+        TWINE_REPOSITORY_URL: ${{ steps.codeartifact.outputs.TWINE_REPOSITORY_URL }}
       run: |
         pip3 install --upgrade pip setuptools wheel twine
         python3 setup.py sdist bdist_wheel
